@@ -169,3 +169,41 @@ func GetEmailBatch(db *sql.DB, params GetEmailBatchQueryParams) ([]EmailEntry, e
 	}
 	return emails, nil
 }
+
+func GetAllRows(db *sql.DB) error {
+	rows, err := db.Query(`
+		SELECT id, email, confirmed_at, opt_out
+		FROM emails
+		ORDER BY email ASC
+	`)
+
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		displayRawRow(rows)
+	}
+	return nil
+}
+
+func displayRawRow(row *sql.Rows) error {
+	var id int64
+	var email string
+	var confirmedAt int64
+	var optOut bool
+
+	err := row.Scan(&id, &email, &confirmedAt, &optOut)
+
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	t := time.Unix(confirmedAt, 0)
+
+	log.Println(id, email, t, optOut)
+	return nil
+}
