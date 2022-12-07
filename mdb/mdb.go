@@ -11,7 +11,7 @@ import (
 type EmailEntry struct {
 	Id          int64
 	Email       string
-	ConfirmedAt time.Time
+	ConfirmedAt *time.Time
 	OptOut      bool
 }
 
@@ -39,7 +39,7 @@ func TryCreate(db *sql.DB) { //this functionality not tied to a specific db, ins
 func emailEntryFromRow(row *sql.Rows) (*EmailEntry, error) {
 	var id int64
 	var email string
-	var confirmedAt *time.Time
+	var confirmedAt int64
 	var optOut bool
 
 	err := row.Scan(&id, &email, &confirmedAt, &optOut) // the number of values passed in must be the number of columns in the table
@@ -51,7 +51,7 @@ func emailEntryFromRow(row *sql.Rows) (*EmailEntry, error) {
 
 	t := time.Unix(confirmedAt, 0)
 
-	return &EmailEntry{Id: id, Email: email, ConfirmedAt: &t, OptOut: &optOut}, nil
+	return &EmailEntry{Id: id, Email: email, ConfirmedAt: &t, OptOut: optOut}, nil
 }
 
 func CreateEmail(db *sql.DB, email string) error {
@@ -114,9 +114,9 @@ func UpdateEmail(db *sql.DB, entry EmailEntry) error {
 }
 
 /*
-	Why don't we actually delete? 
-	Setting opt_out to false prevents the email from being re-added either maliciously or accidentally
-	We retain the entry, allowing the user to re-subscribe without re-registering
+Why don't we actually delete?
+Setting opt_out to false prevents the email from being re-added either maliciously or accidentally
+We retain the entry, allowing the user to re-subscribe without re-registering
 */
 func DeleteEmail(db *sql.DB, email string) error {
 	_, err := db.Exec(`
@@ -132,8 +132,8 @@ func DeleteEmail(db *sql.DB, email string) error {
 }
 
 type GetEmailBatchQueryParams struct {
-	Page int // for pagination
-	Count int 
+	Page  int // for pagination
+	Count int
 }
 
 func GetEmailBatch(db *sql.DB, params GetEmailBatchQueryParams) ([]EmailEntry, error) {
@@ -153,9 +153,9 @@ func GetEmailBatch(db *sql.DB, params GetEmailBatchQueryParams) ([]EmailEntry, e
 	defer rows.Close()
 
 	/*
-	An optimization:
-	By setting the capacity to the expected number of results,
-	we only need one memory allocation for the slice
+		An optimization:
+		By setting the capacity to the expected number of results,
+		we only need one memory allocation for the slice
 	*/
 	emails := make([]EmailEntry, 0, params.Count)
 
