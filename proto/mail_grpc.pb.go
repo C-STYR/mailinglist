@@ -26,7 +26,7 @@ type MailingListServiceClient interface {
 	GetEmail(ctx context.Context, in *GetEmailRequest, opts ...grpc.CallOption) (*EmailResponse, error)
 	UpdateEmail(ctx context.Context, in *UpdateEmailRequest, opts ...grpc.CallOption) (*EmailResponse, error)
 	DeleteEmail(ctx context.Context, in *DeleteEmailRequest, opts ...grpc.CallOption) (*EmailResponse, error)
-	GetBatchEmail(ctx context.Context, in *GetEmailBatchRequest, opts ...grpc.CallOption) (*GetEmailBatchResponse, error)
+	GetEmailBatch(ctx context.Context, in *GetEmailBatchRequest, opts ...grpc.CallOption) (*GetEmailBatchResponse, error)
 }
 
 type mailingListServiceClient struct {
@@ -73,9 +73,9 @@ func (c *mailingListServiceClient) DeleteEmail(ctx context.Context, in *DeleteEm
 	return out, nil
 }
 
-func (c *mailingListServiceClient) GetBatchEmail(ctx context.Context, in *GetEmailBatchRequest, opts ...grpc.CallOption) (*GetEmailBatchResponse, error) {
+func (c *mailingListServiceClient) GetEmailBatch(ctx context.Context, in *GetEmailBatchRequest, opts ...grpc.CallOption) (*GetEmailBatchResponse, error) {
 	out := new(GetEmailBatchResponse)
-	err := c.cc.Invoke(ctx, "/proto.MailingListService/GetBatchEmail", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.MailingListService/GetEmailBatch", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +90,7 @@ type MailingListServiceServer interface {
 	GetEmail(context.Context, *GetEmailRequest) (*EmailResponse, error)
 	UpdateEmail(context.Context, *UpdateEmailRequest) (*EmailResponse, error)
 	DeleteEmail(context.Context, *DeleteEmailRequest) (*EmailResponse, error)
-	GetBatchEmail(context.Context, *GetEmailBatchRequest) (*GetEmailBatchResponse, error)
+	GetEmailBatch(context.Context, *GetEmailBatchRequest) (*GetEmailBatchResponse, error)
 	mustEmbedUnimplementedMailingListServiceServer()
 }
 
@@ -110,8 +110,8 @@ func (UnimplementedMailingListServiceServer) UpdateEmail(context.Context, *Updat
 func (UnimplementedMailingListServiceServer) DeleteEmail(context.Context, *DeleteEmailRequest) (*EmailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteEmail not implemented")
 }
-func (UnimplementedMailingListServiceServer) GetBatchEmail(context.Context, *GetEmailBatchRequest) (*GetEmailBatchResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetBatchEmail not implemented")
+func (UnimplementedMailingListServiceServer) GetEmailBatch(context.Context, *GetEmailBatchRequest) (*GetEmailBatchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetEmailBatch not implemented")
 }
 func (UnimplementedMailingListServiceServer) mustEmbedUnimplementedMailingListServiceServer() {}
 
@@ -198,20 +198,20 @@ func _MailingListService_DeleteEmail_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MailingListService_GetBatchEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MailingListService_GetEmailBatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetEmailBatchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MailingListServiceServer).GetBatchEmail(ctx, in)
+		return srv.(MailingListServiceServer).GetEmailBatch(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.MailingListService/GetBatchEmail",
+		FullMethod: "/proto.MailingListService/GetEmailBatch",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MailingListServiceServer).GetBatchEmail(ctx, req.(*GetEmailBatchRequest))
+		return srv.(MailingListServiceServer).GetEmailBatch(ctx, req.(*GetEmailBatchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -240,8 +240,8 @@ var MailingListService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _MailingListService_DeleteEmail_Handler,
 		},
 		{
-			MethodName: "GetBatchEmail",
-			Handler:    _MailingListService_GetBatchEmail_Handler,
+			MethodName: "GetEmailBatch",
+			Handler:    _MailingListService_GetEmailBatch_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

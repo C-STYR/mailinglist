@@ -23,7 +23,7 @@ message GetEmailBatchRequest {
 
 // these are the responses from the server
 message EmailResponse { optional EmailEntry email_entry = 1; } // won't return anything if no result from database, so "optional"
-message GetEmailBatchResponse { repeated EmailEntry email_entry = 1; } // repeated: can return slice/array, etc. 
+message GetEmailBatchResponse { repeated EmailEntry email_entries = 1; } // repeated: can return slice/array, etc. 
 
 // defining the services
 service MailingListService {
@@ -31,5 +31,5 @@ service MailingListService {
     rpc GetEmail(GetEmailRequest) returns (EmailResponse) {} 
     rpc UpdateEmail(UpdateEmailRequest) returns (EmailResponse) {} 
     rpc DeleteEmail(DeleteEmailRequest) returns (EmailResponse) {} 
-    rpc GetBatchEmail(GetEmailBatchRequest) returns (GetEmailBatchResponse) {} 
+    rpc GetEmailBatch(GetEmailBatchRequest) returns (GetEmailBatchResponse) {} 
 }
